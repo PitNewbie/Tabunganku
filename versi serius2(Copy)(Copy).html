@@ -1,0 +1,1697 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tabunganku Pro</title>
+    <!-- Font Premium & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js untuk Grafik Jaring & Trading Statistik -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #0b0b0d 0%, #14141c 100%);
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-card: rgba(255, 255, 255, 0.02);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --gold: #e5c158;
+            --gold-dark: #b8932d;
+            --gold-glow: rgba(229, 193, 88, 0.25);
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --card-inner: rgba(0, 0, 0, 0.3);
+            --red-withdraw: #ff4b4b;
+            --green-deposit: #25d366;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* --- SCREEN REGISTRASI --- */
+        #register-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #09090b;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .luxury-box {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 32px;
+            padding: 35px 28px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.6);
+            text-align: center;
+        }
+
+        .gold-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--gold);
+            text-shadow: 0 0 15px var(--gold-glow);
+            letter-spacing: 1px;
+            margin-bottom: 25px;
+            line-height: 1.3;
+        }
+
+        /* --- FOTO PROFIL DARI GALERI --- */
+        .avatar-upload-container {
+            position: relative;
+            width: 110px;
+            height: 110px;
+            margin: 0 auto 25px;
+        }
+
+        .avatar-preview {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 2px dashed var(--gold);
+            background: var(--card-inner);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+            transition: 0.3s;
+        }
+
+        .avatar-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+        }
+
+        .avatar-preview i {
+            font-size: 32px;
+            color: var(--text-muted);
+        }
+
+        .avatar-upload-container input[type="file"] {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .upload-badge {
+            position: absolute;
+            bottom: 0; right: 0;
+            background: var(--gold);
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-size: 14px;
+            border: 2px solid #09090b;
+        }
+
+        /* --- FORM ELEMENTS --- */
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            left: 16px; top: 50%;
+            transform: translateY(-50%);
+            color: var(--gold);
+            font-size: 16px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 14px 16px 14px 45px;
+            background: var(--card-inner);
+            border: 1px solid var(--glass-border);
+            border-radius: 14px;
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .input-group input:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 12px var(--gold-glow);
+        }
+
+        /* DROPZONE FOTO BARANG (GALERI) */
+        .file-dropzone {
+            border: 1px dashed var(--glass-border);
+            padding: 20px;
+            border-radius: 14px;
+            text-align: center;
+            background: var(--card-inner);
+            position: relative;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .file-dropzone:hover {
+            border-color: var(--gold);
+        }
+
+        .file-dropzone i {
+            font-size: 24px;
+            color: var(--gold);
+            margin-bottom: 8px;
+        }
+
+        .file-dropzone p {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .file-dropzone img {
+            width: 70px; height: 70px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-top: 10px;
+            display: none;
+            margin-left: auto; margin-right: auto;
+            border: 1px solid var(--glass-border);
+        }
+
+        .btn-gold {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+            border: none;
+            border-radius: 14px;
+            color: #050507;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-size: 13px;
+        }
+
+        .btn-gold:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px var(--gold-glow);
+        }
+
+        .btn-withdraw {
+            background: rgba(255, 75, 75, 0.15);
+            border: 1px solid var(--red-withdraw);
+            color: var(--red-withdraw);
+        }
+
+        .btn-withdraw:hover {
+            background: var(--red-withdraw);
+            color: #fff;
+            box-shadow: 0 8px 25px rgba(255, 75, 75, 0.3);
+        }
+
+        /* --- APP HEADER --- */
+        header {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid var(--glass-border);
+            background: rgba(11, 11, 13, 0.5);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0; z-index: 99;
+        }
+
+        header h1 {
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--gold);
+            text-shadow: 0 0 10px var(--gold-glow);
+        }
+
+        /* --- CONTAINER & PAGES --- */
+        .container {
+            flex: 1;
+            padding: 20px;
+            max-width: 500px;
+            width: 100%;
+            margin: 0 auto;
+            margin-bottom: 90px;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+            animation: fadeIn 0.35s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- HALAMAN BARU: HOME / BERANDA --- */
+        .home-welcome-box {
+            background: var(--glass-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 25px 20px;
+            text-align: left;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            line-height: 1.6;
+        }
+
+        .home-welcome-box p {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 10px;
+        }
+
+        .benefit-card-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .benefit-item {
+            background: var(--card-inner);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 15px;
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+        }
+
+        .benefit-icon {
+            background: rgba(229, 193, 88, 0.1);
+            color: var(--gold);
+            width: 40px; height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+            border: 1px solid rgba(229, 193, 88, 0.2);
+        }
+
+        .benefit-content h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+
+        .benefit-content p {
+            font-size: 12px;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* --- HALAMAN 1: LIST BARANG --- */
+        .section-header {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .long-press-tip {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+            display: block;
+            font-style: italic;
+        }
+
+        .luxury-card-item {
+            background: var(--glass-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 22px;
+            padding: 15px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: 0.25s;
+            position: relative;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .luxury-card-item:hover {
+            border-color: rgba(229, 193, 88, 0.4);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .item-main-row {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .item-image-box {
+            width: 70px; height: 70px;
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid var(--glass-border);
+            background: var(--card-inner);
+        }
+
+        .item-image-box img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+        }
+
+        .item-meta {
+            flex: 1;
+        }
+
+        .item-name-txt {
+            font-size: 16px;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .item-price-txt {
+            font-size: 13px;
+            color: var(--gold);
+            font-weight: 700;
+            margin: 2px 0;
+        }
+
+        .item-saved-badge {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        /* --- HALAMAN DETIL / TABUNGAN BARANG --- */
+        .back-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 13px;
+            cursor: pointer;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .detail-showcase {
+            background: var(--glass-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .detail-img {
+            width: 100%;
+            max-height: 180px;
+            object-fit: cover;
+            border-radius: 16px;
+            margin-bottom: 15px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .detail-price-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 15px 0;
+            text-align: left;
+        }
+
+        .price-box {
+            background: var(--card-inner);
+            padding: 10px;
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .price-box span {
+            display: block;
+            font-size: 9px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .price-box p {
+            font-size: 14px;
+            font-weight: 700;
+            margin-top: 2px;
+        }
+
+        .bar-outer {
+            width: 100%; height: 8px;
+            background: rgba(255,255,255,0.04);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--glass-border);
+            margin-top: 15px;
+        }
+
+        .bar-inner {
+            height: 100%; width: 0%;
+            background: linear-gradient(90deg, var(--gold-dark), var(--gold));
+            box-shadow: 0 0 10px var(--gold);
+            transition: width 0.5s ease;
+        }
+
+        .bar-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 6px;
+        }
+
+        .action-card {
+            background: rgba(229, 193, 88, 0.04);
+            border: 1px solid rgba(229, 193, 88, 0.2);
+            border-radius: 18px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .action-flex {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-flex input {
+            flex: 1;
+            padding: 12px;
+            background: var(--card-inner);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            color: #fff;
+            font-weight: 600;
+            text-align: center;
+            outline: none;
+        }
+
+        .chart-section {
+            background: var(--card-inner);
+            border: 1px solid var(--glass-border);
+            border-radius: 18px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .chart-section h4 {
+            font-size: 13px;
+            color: var(--gold);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+
+        /* --- STYLES: HISTORI INTERNAL BARANG --- */
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        .history-list::-webkit-scrollbar {
+            width: 4px;
+        }
+        .history-list::-webkit-scrollbar-thumb {
+            background: var(--glass-border);
+            border-radius: 4px;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.01);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            font-size: 12px;
+        }
+
+        .history-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .history-date {
+            font-size: 10px;
+            color: var(--text-muted);
+        }
+
+        /* --- HALAMAN: ANALISIS KEUANGAN --- */
+        .stat-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .stat-box {
+            background: var(--glass-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .stat-box p {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+        }
+
+        .stat-box h3 {
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        /* Gaya List Riwayat Barang Sering Diisi */
+        .frequent-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .frequent-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.01);
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .frequent-item .info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .frequent-item .icon-box {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            background: rgba(229, 193, 88, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gold);
+        }
+
+        .frequent-count {
+            font-size: 11px;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 3px 10px;
+            border-radius: 20px;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        /* --- HALAMAN 2: AKUN PROFIL --- */
+        .profile-hero {
+            text-align: center;
+            background: var(--glass-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 25px 15px;
+        }
+
+        .profile-img-container {
+            width: 85px; height: 85px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin: 0 auto 12px;
+            border: 2px solid var(--gold);
+            box-shadow: 0 0 12px var(--gold-glow);
+        }
+
+        .profile-img-container img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+        }
+
+        /* Menu Navigasi Bawah Profil */
+        .profile-menu-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .profile-menu-item {
+            background: var(--glass-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 14px 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .menu-row-main {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .menu-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .menu-left i {
+            font-size: 16px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .chevron {
+            font-size: 12px;
+            color: var(--text-muted);
+            transition: transform 0.3s ease;
+        }
+
+        .submenu-status {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 4px;
+            padding-left: 32px;
+        }
+
+        /* Konten Dropdown (Sembunyi secara default) */
+        .expandable-content {
+       max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            padding-left: 32px;
+        }
+
+        /* Saat Menu Aktif Terbuka */
+        .profile-menu-item.active-menu {
+            border-color: var(--gold);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .profile-menu-item.active-menu .chevron {
+            transform: rotate(90deg);
+            color: var(--gold);
+        }
+
+        .profile-menu-item.active-menu .expandable-content {
+            max-height: 300px;
+            opacity: 1;
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+        /* Grid Pilihan Warna */
+        .color-theme-grid {
+            display: flex;
+            gap: 12px;
+            padding: 5px 0;
+        }
+
+        .color-dot-option {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: #fff;
+        }
+
+        .color-dot-option:hover {
+            transform: scale(1.1);
+        }
+
+        .active-dot {
+            border-color: #fff;
+            box-shadow: 0 0 10px rgba(255,255,255,0.5);
+        }
+
+        /* Kustom khusus channel WA */
+        .wa-channel-btn {
+            border: 1px solid rgba(37, 211, 102, 0.3) !important;
+            background: rgba(37, 211, 102, 0.03) !important;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-decoration: none;
+            color: #fff;
+        }
+        .wa-channel-btn:hover {
+            background: rgba(37, 211, 102, 0.08) !important;
+            border-color: rgba(37, 211, 102, 0.6) !important;
+        }
+
+        /* --- NAVIGASI BAWAH --- */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0; left: 0; width: 100%;
+            height: 75px;
+            background: rgba(11, 11, 13, 0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 999;
+            padding-bottom: 10px;
+        }
+
+        .nav-item {
+            color: var(--text-muted);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 10px;
+            cursor: pointer;
+            width: 60px;
+            text-align: center;
+        }
+
+        .nav-item i {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+
+        .nav-item.active {
+            color: var(--gold);
+            text-shadow: 0 0 10px var(--gold-glow);
+        }
+
+        .center-add-btn {
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+            width: 52px; height: 52px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-size: 22px;
+            box-shadow: 0 5px 15px var(--gold-glow);
+            transform: translateY(-15px);
+            border: 4px solid #0b0b0d;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: 0.2s;
+        }
+        
+        .center-add-btn:active {
+            transform: translateY(-15px) scale(0.95);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SCREEN LOGIN / DAFTAR -->
+    <div id="register-screen" style="display: none;">
+        <div class="luxury-box">
+            <div class="gold-title">WELCOME TO<br>TABUNGANKU</div>
+            <form id="reg-form">
+                <div class="avatar-upload-container">
+                    <div class="avatar-preview" id="avatar-preview-box">
+                        <i class="fa-solid fa-user-plus"></i>
+                        <img id="avatar-img-element" src="#" alt="Avatar">
+                    </div>
+                    <input type="file" id="reg-avatar-file" accept="image/*" required>
+                    <div class="upload-badge"><i class="fa-solid fa-camera"></i></div>
+                </div>
+                
+                <div class="input-group">
+                    <label>Nama Pengguna</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-signature"></i>
+                        <input type="text" id="reg-username" placeholder="Masukkan nama Anda..." required>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Target Tabungan Harian (Rp)</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-money-bill-wave"></i>
+                        <input type="number" id="reg-daily-target" value="10000" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-gold">Buka Web Tracker</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- HEADER STATUS -->
+    <header>
+        <h1 id="app-header-title">BERANDA</h1>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <div class="container">
+        
+        <!-- HALAMAN 1: BERANDA / HOME -->
+        <div id="page-home" class="page active">
+            <div class="home-welcome-box">
+                <h2 style="font-size: 18px; color: var(--gold); font-weight: 700;">
+                    Selamat datang di Tabunganku, <span id="home-user-name">-</span>!
+                </h2>
+                <p>
+                    Di sini adalah tempat terbaik untuk mendisiplinkan impian finansialmu. Menabung bukan sekadar menyisihkan uang sisa, melainkan bentuk komitmen konkret untuk menghargai masa depanmu sendiri. Setiap rupiah yang kamu amankan hari ini adalah fondasi kokoh untuk kebebasan dan barang impian yang ingin kamu raih esok hari.
+                </p>
+            </div>
+
+            <div class="section-header">
+                <span>Apa Manfaat Menabung?</span>
+            </div>
+
+            <div class="benefit-card-container">
+                <div class="benefit-item">
+                    <div class="benefit-icon"><i class="fa-solid fa-gem"></i></div>
+                    <div class="benefit-content">
+                        <h4>Membeli Impian Tanpa Beban Utang</h4>
+                        <p>Mendapatkan barang mewah idaman murni dari keringat tabungan sendiri memberikan kepuasan emosional berkali lipat lebih tinggi tanpa bayang-bayang cicilan.</p>
+                    </div>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon"><i class="fa-solid fa-shield-heart"></i></div>
+                    <div class="benefit-content">
+                        <h4>Keamanan Finansial (Dana Darurat)</h4>
+                        <p>Hidup selalu penuh kejutan tidak terduga. Dengan konsisten menabung, kamu membangun perisai kokoh yang siap melindungimu kapan pun badai ekonomi datang.</p>
+                    </div>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon"><i class="fa-solid fa-arrow-up-right-dots"></i></div>
+                    <div class="benefit-content">
+                        <h4>Melatih Kedisiplinan & Kontrol Diri</h4>
+                        <p>Menabung melatih mental tangguh untuk menunda kepuasan sesaat (impulsive buying) demi meraih pencapaian yang jauh lebih besar dan bernilai di masa depan.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- HALAMAN 2: LIST BARANG -->
+        <div id="page-list" class="page">
+            <div class="section-header">
+                <span>Wishlist Barang Saya</span>
+                <span id="total-items-badge" style="color:var(--gold);">0 Item</span>
+            </div>
+            <span class="long-press-tip">*💡 Tips: Tahan lama (hold) pada item jika ingin menghapusnya.</span>
+            <div id="items-list-container"></div>
+        </div>
+
+        <!-- HALAMAN KHUSUS: DETAIL TABUNGAN BARANG -->
+        <div id="page-detail" class="page">
+            <button class="back-btn" onclick="switchPage('list')">
+                <i class="fa-solid fa-arrow-left"></i> Kembali ke Daftar
+            </button>
+            
+            <div class="detail-showcase" id="detail-showcase-box"></div>
+
+            <!-- Formulir Menabung Uang Masuk & Ambil Uang Keluar -->
+            <div class="action-card">
+                <div class="action-flex" style="flex-direction: column; gap: 12px;">
+                    <input type="number" id="saving-deposit-amount" placeholder="Nominal uang..." value="5000">
+                    <div style="display: flex; gap: 10px; width: 100%;">
+                        <button class="btn-gold" style="flex: 1;" onclick="executeTransaction('masuk')">
+                            <i class="fa-solid fa-plus-circle"></i> Tabung
+                        </button>
+                        <button class="btn-gold btn-withdraw" style="flex: 1;" onclick="executeTransaction('keluar')">
+                            <i class="fa-solid fa-minus-circle"></i> Ambil
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Statistik Jaring Khusus Barang Ini -->
+            <div class="chart-section">
+                <h4><i class="fa-solid fa-chart-pie"></i> Jaring Statistik Tabungan Harian</h4>
+                <div style="position: relative; width: 100%; height: 240px;">
+                    <canvas id="itemRadarChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Riwayat Transaksi Internal Barang -->
+            <div class="chart-section">
+                <h4><i class="fa-solid fa-clock-rotate-left"></i> Riwayat Transaksi Barang Ini</h4>
+                <div class="history-list" id="item-history-container"></div>
+            </div>
+        </div>
+
+        <!-- HALAMAN 3: ANALISIS KEUANGAN -->
+        <div id="page-analisis" class="page">
+            <div class="stat-grid">
+                <div class="stat-box">
+                    <p>Total Tabungan</p>
+                    <h3 id="analisis-total-all" style="color: var(--gold);">Rp 0</h3>
+                </div>
+                <div class="stat-box">
+                    <p>Total Diambil</p>
+                    <h3 id="analisis-total-keluar" style="color: var(--red-withdraw);">Rp 0</h3>
+                </div>
+            </div>
+
+            <!-- Grafik Batang Statistik -->
+            <div class="chart-section">
+                <h4><i class="fa-solid fa-chart-bar"></i> Live Trading View Statistik</h4>
+                <div style="position: relative; width: 100%; height: 240px;">
+                    <canvas id="tradingBarChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Riwayat Barang yang Sering Diisi -->
+            <div class="chart-section">
+                <h4><i class="fa-solid fa-fire"></i> Sering Diisi / Diambil</h4>
+                <div class="frequent-list" id="frequent-list-container"></div>
+            </div>
+        </div>
+
+        <!-- HALAMAN 4: AKUN PROFIL -->
+        <div id="page-account" class="page">
+            <div class="profile-hero">
+                <div class="profile-img-container">
+                    <img id="profile-display-pic" src="" alt="Foto">
+                </div>
+                <h3 id="profile-display-name" class="gold-text">-</h3>
+                <p style="font-size:12px; color:var(--text-muted); margin-top:5px;">Premium Member</p>
+            </div>
+
+            <div class="chart-section" style="margin-top:15px; text-align:center;">
+                <h4>Total Finansial Tabungan</h4>
+                <div id="profile-total-money" style="font-size:24px; font-weight:700; color:var(--gold);">Rp 0</div>
+            </div>
+
+            <div class="profile-menu-list">
+                <!-- MENU 1: KEAMANAN -->
+                <div class="profile-menu-item" onclick="toggleMenu(this)">
+                    <div class="menu-row-main">
+                        <div class="menu-left">
+                            <i class="fa-solid fa-shield-halved" style="color: var(--gold);"></i>
+                            <span>Keamanan Aplikasi</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right chevron"></i>
+                    </div>
+                    <div class="submenu-status" id="sandi-status-text">Status: Belum Dipasang</div>
+                    
+                    <div class="expandable-content" onclick="event.stopPropagation()">
+                        <div class="input-group" style="margin-bottom:10px;">
+                            <input type="password" id="input-app-password" placeholder="Masukkan sandi baru..." style="padding:10px 14px;">
+                        </div>
+                        <button type="button" class="btn-gold" style="padding:10px; font-size:11px;" onclick="savePassword()">Simpan Sandi</button>
+                    </div>
+                </div>
+
+                <!-- MENU 2: TEMA TEMA -->
+                <div class="profile-menu-item" onclick="toggleMenu(this)">
+                    <div class="menu-row-main">
+                        <div class="menu-left">
+                            <i class="fa-solid fa-palette" style="color: var(--gold);"></i>
+                            <span>Tema Warna Gradasi</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right chevron"></i>
+                    </div>
+                    <div class="submenu-status" id="tema-status-text">Warna: Emas (Default)</div>
+                    
+                    <div class="expandable-content" onclick="event.stopPropagation()">
+                        <div class="color-theme-grid">
+                            <div class="color-dot-option active-dot" style="background:#e5c158;" onclick="changeThemeColor('#e5c158', '#b8932d', 'rgba(229, 193, 88, 0.25)', 'Emas (Default)', event)"></div>
+                            <div class="color-dot-option" style="background:#3b82f6;" onclick="changeThemeColor('#3b82f6', '#1d4ed8', 'rgba(59, 130, 246, 0.25)', 'Biru Regular', event)"></div>
+                            <div class="color-dot-option" style="background:#ef4444;" onclick="triggerPremiumAlert('Merah Crimson')"><i class="fa-solid fa-lock"></i></div>
+                            <div class="color-dot-option" style="background:#10b981;" onclick="triggerPremiumAlert('Hijau Emerald')"><i class="fa-solid fa-lock"></i></div>
+                            <div class="color-dot-option" style="background:#a855f7;" onclick="triggerPremiumAlert('Ungu Royal')"><i class="fa-solid fa-lock"></i></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MENU 3: PROFIL FORM -->
+                <div class="profile-menu-item" onclick="toggleMenu(this)">
+                    <div class="menu-row-main">
+                        <div class="menu-left">
+                            <i class="fa-solid fa-sliders" style="color: var(--gold);"></i>
+                            <span>Pengaturan Profil</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right chevron"></i>
+                    </div>
+                    <div class="submenu-status">Ubah data & foto akun Anda</div>
+                    
+                    <div class="expandable-content" onclick="event.stopPropagation()">
+                        <div class="input-group" style="margin-bottom:12px;">
+                            <label style="font-size:9px;">Ganti Username</label>
+                            <input type="text" id="edit-username-input" style="padding:10px 12px;">
+                        </div>
+                        <div class="input-group" style="margin-bottom:12px;">
+                            <label style="font-size:9px;">Nomor Telepon</label>
+                            <input type="tel" id="edit-phone-input" placeholder="Contoh: 081234567xx" style="padding:10px 12px;">
+                        </div>
+                        <div class="input-group" style="margin-bottom:15px;">
+                            <label style="font-size:9px;">Ganti Foto Profil</label>
+                            <input type="file" id="edit-avatar-file" accept="image/*" style="padding:6px; background:none; border:none;">
+                        </div>
+                        <button type="button" class="btn-gold" style="padding:12px; font-size:11px;" onclick="saveProfileChanges()">Perbarui Data</button>
+                    </div>
+                </div>
+
+                <!-- Link WhatsApp Channel Resmi -->
+                <a href="https://whatsapp.com/channel/0029Vb6678635fLqu0pxqx2K" target="_blank" class="profile-menu-item wa-channel-btn">
+                    <div class="menu-left">
+                        <i class="fa-brands fa-whatsapp" style="color: #25D366; font-size: 18px;"></i>
+                        <span style="font-weight: 600;">Channel Resmi</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <span style="font-size: 11px; color: #25D366; background: rgba(37,211,102,0.1); padding: 2px 8px; border-radius: 10px;">Gabung</span>
+                        <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 11px; color: #25D366;"></i>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- HALAMAN 5: TAMBAH BARANG BARU -->
+        <div id="page-add-item" class="page">
+            <div class="luxury-box" style="max-width:100%; backdrop-filter:none; background:none; border:none; padding:0;">
+                <h3 class="gold-text" style="font-size:18px; margin-bottom:15px;">Tambah Barang Baru</h3>
+                <form id="add-item-form">
+                    <div class="input-group">
+                        <label>Nama Barang</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-box"></i>
+                            <input type="text" id="new-item-name" placeholder="Misal: Vario Lama" required>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Harga Barang (Rp)</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-tags"></i>
+                            <input type="number" id="new-item-price" placeholder="15000000" required>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Foto Produk (Dari Galeri)</label>
+                        <div class="file-dropzone" onclick="document.getElementById('new-item-file').click()">
+                            <i class="fa-solid fa-images"></i>
+                            <p id="dropzone-text">Klik di sini untuk pilih dari galeri HP</p>
+                            <img id="item-image-preview" src="#" alt="Preview Image">
+                            <input type="file" id="new-item-file" accept="image/*" style="display:none;" required>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Uang Awal Tabungan (Rp)</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-piggy-bank"></i>
+                            <input type="number" id="new-item-initial" value="0">
+                        </div>
+                    </div>
+
+                    <div style="display:flex; gap:10px; margin-top:20px;">
+                        <button type="button" class="btn-gold" style="background:#444; color:#fff;" onclick="switchPage('list')">Batal</button>
+                        <button type="submit" class="btn-gold">Simpan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- MENU NAVIGASI BAWAH FIXED BALANCED & SIMETRIS -->
+    <div class="bottom-nav">
+        <div class="nav-item active" id="nav-home" onclick="switchPage('home')">
+            <i class="fa-solid fa-house"></i>
+            <span>Beranda</span>
+        </div>
+        <div class="nav-item" id="nav-list" onclick="switchPage('list')">
+            <i class="fa-solid fa-wallet"></i>
+            <span>Tabungan</span>
+        </div>
+        
+        <!-- TOMBOL PLUS PRESISI DI TENGAH MAP -->
+        <div class="center-add-btn" onclick="switchPage('add')">
+            <i class="fa-solid fa-plus"></i>
+        </div>
+        
+        <div class="nav-item" id="nav-analisis" onclick="switchPage('analisis')">
+            <i class="fa-solid fa-chart-simple"></i>
+            <span>Analisis</span>
+        </div>
+        <div class="nav-item" id="nav-account" onclick="switchPage('account')">
+            <i class="fa-solid fa-circle-user"></i>
+            <span>Akun</span>
+        </div>
+    </div>
+
+    <script>
+        let appUser = JSON.parse(localStorage.getItem('lux_user_profile')) || null;
+        let appItems = JSON.parse(localStorage.getItem('lux_user_items')) || [];
+        let appHistory = JSON.parse(localStorage.getItem('lux_user_history')) || []; 
+        let activeItemIndex = null;
+        let itemChartInstance = null;
+        let tradingChartInstance = null;
+
+        document.getElementById('reg-avatar-file').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    document.getElementById('avatar-img-element').src = event.target.result;
+                    document.getElementById('avatar-img-element').style.display = 'block';
+                    document.getElementById('avatar-preview-box').querySelector('i').style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.getElementById('new-item-file').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    document.getElementById('item-image-preview').src = event.target.result;
+                    document.getElementById('item-image-preview').style.display = 'block';
+                    document.getElementById('dropzone-text').innerText = "Foto Galeri Berhasil Dimuat!";
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        window.onload = function() {
+            if (!appUser) {
+                document.getElementById('register-screen').style.display = 'flex';
+            } else {
+                initApp();
+            }
+        };
+
+        document.getElementById('reg-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            appUser = {
+                name: document.getElementById('reg-username').value,
+                dailyTarget: parseInt(document.getElementById('reg-daily-target').value) || 10000,
+                avatar: document.getElementById('avatar-img-element').src
+            };
+            localStorage.setItem('lux_user_profile', JSON.stringify(appUser));
+            document.getElementById('register-screen').style.display = 'none';
+            initApp();
+        });
+
+        function initApp() {
+            renderListBarang();
+            loadProfile();
+            if(appUser) {
+                document.getElementById('home-user-name').innerText = appUser.name;
+            }
+        }
+
+        function loadProfile() {
+            if(appUser) {
+                document.getElementById('profile-display-name').innerText = appUser.name;
+                document.getElementById('profile-display-pic').src = appUser.avatar;
+                
+                // Mengisi data total finansial secara realtime di akun
+                let totalAllSavings = appItems.reduce((acc, item) => acc + item.current, 0);
+                if(document.getElementById('profile-total-money')) {
+                    document.getElementById('profile-total-money').innerText = "Rp " + totalAllSavings.toLocaleString('id-ID');
+                }
+            }
+        }
+
+        function switchPage(target) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+            if (target === 'home') {
+                document.getElementById('page-home').classList.add('active');
+                document.getElementById('nav-home').classList.add('active');
+                document.getElementById('app-header-title').innerText = "BERANDA";
+                if(appUser) document.getElementById('home-user-name').innerText = appUser.name;
+            } else if (target === 'list') {
+                document.getElementById('page-list').classList.add('active');
+                document.getElementById('nav-list').classList.add('active');
+                document.getElementById('app-header-title').innerText = "LIST TABUNGAN";
+                renderListBarang();
+            } else if (target === 'analisis') {
+                document.getElementById('page-analisis').classList.add('active');
+                document.getElementById('nav-analisis').classList.add('active');
+                document.getElementById('app-header-title').innerText = "ANALISIS KEUANGAN";
+                renderAnalisisData();
+            } else if (target === 'account') {
+                document.getElementById('page-account').classList.add('active');
+                document.getElementById('nav-account').classList.add('active');
+                document.getElementById('app-header-title').innerText = "AKUN PROFIL";
+                loadProfile();
+            } else if (target === 'add') {
+                document.getElementById('page-add-item').classList.add('active');
+                document.getElementById('app-header-title').innerText = "TAMBAH BARANG";
+            } else if (target === 'detail') {
+                document.getElementById('page-detail').classList.add('active');
+            }
+        }
+
+        function renderListBarang() {
+            const container = document.getElementById('items-list-container');
+            container.innerHTML = '';
+            document.getElementById('total-items-badge').innerText = appItems.length + " Barang";
+
+            if(appItems.length === 0) {
+                container.innerHTML = `<div style="text-align:center; color:var(--text-muted); margin-top:30px; font-size:12px;">Wishlist kosong. Tambah barang dengan menekan tombol (+)</div>`;
+                return;
+            }
+
+            appItems.forEach((item, index) => {
+                const percent = Math.min(((item.current / item.price) * 100), 100).toFixed(0);
+                const card = document.createElement('div');
+                card.className = 'luxury-card-item';
+                
+                let pressTimer;
+                let isLongPress = false;
+
+                const startPress = function(e) {
+                    isLongPress = false;
+                    pressTimer = setTimeout(function() {
+                        isLongPress = true;
+                        hancurkanBarang(index, item.name);
+                    }, 800);
+                };
+
+                const endPress = function(e) {
+                    clearTimeout(pressTimer);
+                    if (!isLongPress && pressTimer !== null) {
+                        openDetailBarang(index);
+                    }
+                };
+
+                card.addEventListener('mousedown', startPress);
+                card.addEventListener('mouseup', endPress);
+                card.addEventListener('touchstart', startPress, { passive: true });
+                card.addEventListener('touchend', endPress, { passive: true });
+                card.addEventListener('mouseleave', () => clearTimeout(pressTimer));
+
+                card.innerHTML = `
+                    <div class="item-main-row">
+                        <div class="item-image-box"><img src="${item.img}"></div>
+                        <div class="item-meta">
+                            <div class="item-name-txt">${item.name}</div>
+                            <div class="item-price-txt">Rp ${item.price.toLocaleString('id-ID')}</div>
+                            <div class="item-saved-badge">Terkumpul: <b>Rp ${item.current.toLocaleString('id-ID')}</b> (${percent}%)</div>
+                        </div>
+                        <div style="color:var(--gold);"><i class="fa-solid fa-chevron-right"></i></div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function hancurkanBarang(index, name) {
+            const tanya = confirm(`Apakah Anda yakin ingin menghapus target tabungan "${name}"? Tindakan ini tidak bisa dibatalkan.`);
+            if (tanya) {
+                appItems.splice(index, 1);
+                localStorage.setItem('lux_user_items', JSON.stringify(appItems));
+                renderListBarang();
+            }
+        }
+
+        function openDetailBarang(index) {
+            activeItemIndex = index;
+            const item = appItems[index];
+            if (!item) return;
+            switchPage('detail');
+            document.getElementById('app-header-title').innerText = "TABUNGAN BARANG";
+
+            const percent = Math.min(((item.current / item.price) * 100), 100).toFixed(1);
+            const sisa = Math.max(item.price - item.current, 0);
+            const sisaHari = Math.ceil(sisa / (appUser?.dailyTarget || 10000));
+            const infoHari = sisa === 0 ? "Target Terpenuhi!" : `${sisaHari} hari lagi kekumpul`;
+
+            document.getElementById('detail-showcase-box').innerHTML = `
+                <img src="${item.img}" class="detail-img">
+                <div style="font-size:20px; font-weight:700; margin-bottom:5px;">${item.name}</div>
+                <div class="detail-price-grid">
+                    <div class="price-box"><span>Harga Barang</span><p style="color:var(--gold);">Rp ${item.price.toLocaleString('id-ID')}</p></div>
+                    <div class="price-box"><span>Tabunganku</span><p>Rp ${item.current.toLocaleString('id-ID')}</p></div>
+                </div>
+                <div class="bar-outer"><div class="bar-inner" id="detail-bar" style="width:0%"></div></div>
+                <div class="bar-labels"><span>Progres: ${percent}%</span><span style="color:var(--gold);">${infoHari}</span></div>
+            `;
+
+            setTimeout(() => { 
+                const bar = document.getElementById('detail-bar');
+                if(bar) bar.style.width = percent + '%'; 
+            }, 100);
+            renderRadarChart(item);
+            renderItemHistory(item.name);
+        }
+
+        function renderItemHistory(itemName) {
+            const container = document.getElementById('item-history-container');
+            container.innerHTML = '';
+
+            let filteredHistory = appHistory.filter(h => h.name === itemName);
+
+            if(filteredHistory.length === 0) {
+                container.innerHTML = `<div style="text-align:center; color:var(--text-muted); font-size:11px; padding:10px;">Belum ada riwayat transaksi barang ini.</div>`;
+                return;
+            }
+
+            filteredHistory.slice().reverse().forEach(log => {
+                const div = document.createElement('div');
+                div.className = 'history-item';
+                
+                const isMasuk = log.type === 'masuk';
+                const color = isMasuk ? 'var(--green-deposit)' : 'var(--red-withdraw)';
+                const sign = isMasuk ? '+' : '-';
+                const icon = isMasuk ? 'fa-solid fa-arrow-trend-up' : 'fa-solid fa-arrow-trend-down';
+                const labelText = isMasuk ? 'Menabung' : 'Mengambil Uang';
+
+                div.innerHTML = `
+                    <div class="history-left">
+                        <i class="${icon}" style="color: ${color}; font-size: 14px;"></i>
+                        <div>
+                            <div style="font-weight:600;">${labelText}</div>
+                            <div class="history-date">${log.date || 'Waktu tidak terdeteksi'}</div>
+                        </div>
+                    </div>
+                    <div style="color: ${color}; font-weight:700;">${sign} Rp ${log.amount.toLocaleString('id-ID')}</div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function executeTransaction(type) {
+            const amt = parseInt(document.getElementById('saving-deposit-amount').value);
+            if(isNaN(amt) || amt <= 0) return alert('Nominal tidak valid!');
+            
+            const currentItem = appItems[activeItemIndex];
+            const timeString = new Date().toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'});
+
+            if (type === 'masuk') {
+                currentItem.current += amt;
+                appHistory.push({ name: currentItem.name, amount: amt, type: 'masuk', date: timeString });
+            } else if (type === 'keluar') {
+                if (amt > currentItem.current) {
+                    return alert('Uang di tabungan barang ini tidak cukup!');
+                }
+                currentItem.current -= amt;
+                appHistory.push({ name: currentItem.name, amount: amt, type: 'keluar', date: timeString });
+            }
+
+            localStorage.setItem('lux_user_items', JSON.stringify(appItems));
+            localStorage.setItem('lux_user_history', JSON.stringify(appHistory));
+            openDetailBarang(activeItemIndex);
+        }
+
+        function renderAnalisisData() {
+            let totalAllSavings = appItems.reduce((acc, item) => acc + item.current, 0);
+            let totalWithdraw = appHistory.filter(h => h.type === 'keluar').reduce((acc, h) => acc + h.amount, 0);
+
+            document.getElementById('analisis-total-all').innerText = "Rp " + totalAllSavings.toLocaleString('id-ID');
+            document.getElementById('analisis-total-keluar').innerText = "Rp " + totalWithdraw.toLocaleString('id-ID');
+
+            renderTradingBarChart();
+            renderFrequentItems();
+        }
+
+        function renderTradingBarChart() {
+            const ctx = document.getElementById('tradingBarChart');
+            if (tradingChartInstance) tradingChartInstance.destroy();
+
+            let lastLogs = appHistory.slice(-7);
+            let labels = lastLogs.map(l => l.name);
+            let dataValues = lastLogs.map(l => l.amount);
+            let barColors = lastLogs.map(l => l.type === 'masuk' ? '#e5c158' : '#ff4b4b');
+
+            if (lastLogs.length === 0) {
+                labels = ['Belum Ada Data'];
+                dataValues = [0];
+                barColors = ['#e5c158'];
+            }
+
+            tradingChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: dataValues,
+                        backgroundColor: barColors,
+                        borderRadius: 8,
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            grid: { color: 'rgba(255,255,255,0.05)' },
+                            ticks: { color: '#9ca3af', font: { size: 9 } }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: '#9ca3af', font: { size: 9 } }
+                        }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        function renderFrequentItems() {
+            const container = document.getElementById('frequent-list-container');
+            container.innerHTML = '';
+
+            let counts = {};
+            appHistory.forEach(h => { counts[h.name] = (counts[h.name] || 0) + 1; });
+
+            let sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 3);
+
+            if (sorted.length === 0) {
+                container.innerHTML = `<div style="text-align:center; color:var(--text-muted); font-size:12px; padding:15px;">Belum ada riwayat aktivitas</div>`;
+                return;
+            }
+
+            sorted.forEach(([name, count]) => {
+                const div = document.createElement('div');
+                div.className = 'frequent-item';
+                div.innerHTML = `
+                    <div class="info">
+                        <div class="icon-box"><i class="fa-solid fa-fire-flame-curved"></i></div>
+                        <span style="font-size:14px; font-weight:600;">${name}</span>
+                    </div>
+                    <span class="frequent-count">${count}x Diisi/Ambil</span>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        document.getElementById('add-item-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const imgFileSrc = document.getElementById('item-image-preview').src;
+            if(imgFileSrc.endsWith('#')) return alert('Masukkan foto barang dari galeri dahulu!');
+
+            const itemName = document.getElementById('new-item-name').value;
+            const initialAmt = parseInt(document.getElementById('new-item-initial').value) || 0;
+            const timeString = new Date().toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'});
+
+            appItems.push({
+                name: itemName,
+                price: parseInt(document.getElementById('new-item-price').value),
+                current: initialAmt,
+                img: imgFileSrc
+            });
+
+            if (initialAmt > 0) {
+                appHistory.push({ name: itemName, amount: initialAmt, type: 'masuk', date: timeString });
+                localStorage.setItem('lux_user_history', JSON.stringify(appHistory));
+            }
+
+            localStorage.setItem('lux_user_items', JSON.stringify(appItems));
+            document.getElementById('add-item-form').reset();
+            document.getElementById('item-image-preview').style.display = 'none';
+            switchPage('list');
+        });
+
+        function renderRadarChart(item) {
+            const ctx = document.getElementById('itemRadarChart');
+            if(itemChartInstance) itemChartInstance.destroy();
+
+            const terkumpul = Math.min(((item.current / item.price) * 100), 100);
+            const sisa = 100 - terkumpul;
+
+            itemChartInstance = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['Terkumpul (%)', 'Sisa (%)', 'Konsistensi', 'Rasio Kecepatan', 'Stabilitas'],
+                    datasets: [{
+                        data: [terkumpul, sisa, Math.max(terkumpul, 30), terkumpul, Math.min(terkumpul * 1.1, 100)],
+                        backgroundColor: 'rgba(229, 193, 88, 0.15)',
+                        borderColor: '#e5c158',
+                        borderWidth: 2,
+                        pointBackgroundColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            grid: { color: 'rgba(255,255,255,0.07)' },
+                            angleLines: { color: 'rgba(255,255,255,0.07)' },
+                            pointLabels: { color: '#9ca3af', font: { size: 10 } },
+                            ticks: { display: false, max: 100, min: 0 }
+                        }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        } // <-- INI DIA COY, KEMARIN GAK ADA PENUTUP INI NYA 🗿
+
+        // ==========================================
+        // KODE LOGIKA JAVASCRIPT TAMBAHAN (PROFIL)
+        // ==========================================
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const editAvatarFile = document.getElementById('edit-avatar-file');
+            if (editAvatarFile) {
+                editAvatarFile.addEventListener('change', function(e) {
+                    if (e.target.files[0]) {
+                        const reader = new FileReader();
+                        reader.onload = function(event) {
+                            if(appUser) {
+                                appUser.avatar = event.target.result;
+                                document.getElementById('profile-display-pic').src = event.target.result;
+                            }
+                        };
+                        reader.readAsDataURL(e.target.files[0]);
+                    }
+                });
+            }
+        });
+
+        function toggleMenu(element) {
+            const isActive = element.classList.contains('active-menu');
+            document.querySelectorAll('.profile-menu-item').forEach(item => item.classList.remove('active-menu'));
+            if (!isActive) {
+                element.classList.add('active-menu');
+            }
+        }
+
+        function savePassword() {
+            const newPass = document.getElementById('input-app-password').value.trim();
+            if(!appUser) appUser = {};
+            appUser.password = newPass;
+            localStorage.setItem('lux_user_profile', JSON.stringify(appUser));
+            
+            const statusText = document.getElementById('sandi-status-text');
+            if(statusText) statusText.innerText = newPass ? 'Status: Terkunci' : 'Status: Belum Dipasang';
+            
+            alert(newPass ? 'Kata sandi aplikasi berhasil disimpan!' : 'Sandi dikosongkan.');
+            document.getElementById('input-app-password').value = '';
+        }
+
+        function changeThemeColor(main, dark, glow, name, event) {
+            if(!appUser) appUser = {};
+            appUser.themeColors = { main, dark, glow };
+            appUser.themeName = name;
+            localStorage.setItem('lux_user_profile', JSON.stringify(appUser));
+            
+            document.documentElement.style.setProperty('--gold', main);
+            document.documentElement.style.setProperty('--gold-dark', dark);
+            document.documentElement.style.setProperty('--gold-glow', glow);
+            
+            const temaText = document.getElementById('tema-status-text');
+            if(temaText) temaText.innerText = 'Warna: ' + name;
+            
+            document.querySelectorAll('.color-dot-option').forEach(dot => dot.classList.remove('active-dot'));
+            if(event && event.target) event.target.classList.add('active-dot');
+            
+            alert('Aksen tema berhasil diubah ke ' + name);
+        }
+
+        function triggerPremiumAlert(warna) {
+            alert(`Warna [${warna}] terkunci! Fitur ganti warna mewah khusus untuk user Premium.`);
+        }
+
+        function saveProfileChanges() {
+            const newName = document.getElementById('edit-username-input').value.trim();
+            const newPhone = document.getElementById('edit-phone-input').value.trim();
+
+            if(!newName) return alert('Nama pengguna tidak boleh kosong!');
+            if(!appUser) appUser = {};
+            
+            appUser.name = newName;
+            appUser.phone = newPhone;
+
+            localStorage.setItem('lux_user_profile', JSON.stringify(appUser));
+            alert('Data profil berhasil diperbarui, Bos!');
+            
+            document.getElementById('profile-display-name').innerText = newName;
+            
+            document.getElementById('edit-username-input').value = '';
+            document.getElementById('edit-phone-input').value = '';
+        }
+    </script>
+</body>
+</html>
